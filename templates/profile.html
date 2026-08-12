@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}My Account — Spendly{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="profile-section">
+    <div class="profile-container">
+
+        <div class="profile-header">
+            <h1 class="profile-title">My account</h1>
+            <p class="profile-subtitle">Your Spendly profile and activity</p>
+        </div>
+
+        <div class="profile-card">
+            <div class="profile-row">
+                <span class="profile-label">Name</span>
+                <span class="profile-value">{{ user.name }}</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">Email</span>
+                <span class="profile-value">{{ user.email }}</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">Member since</span>
+                <span class="profile-value">{{ user.created_at.split(' ')[0] }}</span>
+            </div>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-card">
+                <span class="stat-label">Total spent</span>
+                <span class="stat-value">₹{{ "%.2f" | format(summary.total_spent) }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Expenses logged</span>
+                <span class="stat-value">{{ summary.expense_count }}</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
