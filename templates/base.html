@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block head %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
     <nav class="navbar">
         <div class="nav-inner">
@@ -20,7 +20,11 @@
             </a>
             <div class="nav-links">
                 {% if session.get('user_id') %}
+                {% if nav_user %}
+                <a href="{{ url_for('profile') }}" class="nav-username">{{ nav_user.name }}</a>
+                {% else %}
                 <a href="{{ url_for('profile') }}">My account</a>
+                {% endif %}
                 <a href="{{ url_for('logout') }}" class="nav-cta">Sign out</a>
                 {% else %}
                 <a href="{{ url_for('login') }}">Sign in</a>

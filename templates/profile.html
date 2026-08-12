@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}My Account — Spendly{% endblock %}
+
+{% block body_class %}profile-page{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="profile-section">
+    <div class="profile-container">
+
+        <div class="profile-card">
+            <div class="profile-avatar">{{ user.name[:1] | upper }}</div>
+            <div class="profile-info">
+                <h1 class="profile-name">{{ user.name }}</h1>
+                <p class="profile-email">{{ user.email }}</p>
+                <p class="profile-since">Member since {{ user.created_at.split(' ')[0] }}</p>
+            </div>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-card">
+                <span class="stat-label">Total spent</span>
+                <span class="stat-value">₹{{ "%.2f" | format(summary.total_spent) }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Transactions</span>
+                <span class="stat-value">{{ summary.expense_count }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Top category</span>
+                <span class="stat-value stat-value-text">{{ top_category if top_category else "—" }}</span>
+            </div>
+        </div>
+
+        <div class="profile-grid">
+
+            <div class="panel">
+                <h2 class="panel-title">Recent transactions</h2>
+
+                {% if recent_expenses %}
+                <div class="tx-table-wrap">
+                    <table class="tx-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th class="tx-amount-col">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in recent_expenses %}
+                            <tr>
+                                <td class="tx-date">{{ expense.date }}</td>
+                                <td class="tx-desc">{{ expense.description if expense.description else "—" }}</td>
+                                <td><span class="category-badge">{{ expense.category }}</span></td>
+                                <td class="tx-amount-col tx-amount">₹{{ "%.2f" | format(expense.amount) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="empty-state">No expenses yet</p>
+                {% endif %}
+            </div>
+
+            <div class="panel">
+                <h2 class="panel-title">By category</h2>
+
+                {% if category_totals %}
+                <div class="category-list">
+                    {% for row in category_totals %}
+                    <div class="category-row">
+                        <div class="category-row-top">
+                            <span class="category-row-name">{{ row.category }}</span>
+                            <span class="category-row-amount">₹{{ "%.2f" | format(row.total) }}</span>
+                        </div>
+                        <div class="category-bar-track">
+                            <div class="category-bar" style="width: {{ (row.total / category_totals[0].total * 100) | round(1) }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state">No expenses yet</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

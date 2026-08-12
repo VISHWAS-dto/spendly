@@ -3,7 +3,17 @@ import sqlite3
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
 
-from database.db import create_user, get_db, get_user_by_email, init_db, seed_db
+from database.db import (
+    create_user,
+    get_category_totals,
+    get_db,
+    get_expense_summary,
+    get_recent_expenses,
+    get_user_by_email,
+    get_user_by_id,
+    init_db,
+    seed_db,
+)
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key-change-in-production"
@@ -84,6 +94,33 @@ def logout():
     return redirect(url_for("landing"))
 
 
+@app.route("/profile")
+def profile():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("login"))
+
+    user = get_user_by_id(user_id)
+    if user is None:
+        session.clear()
+        return redirect(url_for("login"))
+
+    summary = get_expense_summary(user_id)
+    recent_expenses = get_recent_expenses(user_id)
+    category_totals = get_category_totals(user_id)
+    top_category = category_totals[0]["category"] if category_totals else None
+
+    return render_template(
+        "profile.html",
+        user=user,
+        summary=summary,
+        recent_expenses=recent_expenses,
+        category_totals=category_totals,
+        top_category=top_category,
+        nav_user=user,
+    )
+
+
 @app.route("/terms")
 def terms():
     return render_template("terms.html")
@@ -97,11 +134,6 @@ def privacy():
 # ------------------------------------------------------------------ #
 # Placeholder routes — students will implement these                  #
 # ------------------------------------------------------------------ #
-
-@app.route("/profile")
-def profile():
-    return "Profile page — coming in Step 4"
-
 
 @app.route("/expenses/add")
 def add_expense():
