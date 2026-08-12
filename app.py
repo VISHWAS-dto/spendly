@@ -5,8 +5,10 @@ from werkzeug.security import check_password_hash
 
 from database.db import (
     create_user,
+    get_category_totals,
     get_db,
     get_expense_summary,
+    get_recent_expenses,
     get_user_by_email,
     get_user_by_id,
     init_db,
@@ -104,7 +106,19 @@ def profile():
         return redirect(url_for("login"))
 
     summary = get_expense_summary(user_id)
-    return render_template("profile.html", user=user, summary=summary)
+    recent_expenses = get_recent_expenses(user_id)
+    category_totals = get_category_totals(user_id)
+    top_category = category_totals[0]["category"] if category_totals else None
+
+    return render_template(
+        "profile.html",
+        user=user,
+        summary=summary,
+        recent_expenses=recent_expenses,
+        category_totals=category_totals,
+        top_category=top_category,
+        nav_user=user,
+    )
 
 
 @app.route("/terms")
