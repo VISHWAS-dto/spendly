@@ -18,7 +18,7 @@
             <div class="profile-info">
                 <h1 class="profile-name">{{ user.name }}</h1>
                 <p class="profile-email">{{ user.email }}</p>
-                <p class="profile-since">Member since {{ user.created_at.split(' ')[0] }}</p>
+                <p class="profile-since">Member since {{ user.member_since }}</p>
             </div>
         </div>
 
@@ -29,7 +29,7 @@
             </div>
             <div class="stat-card">
                 <span class="stat-label">Transactions</span>
-                <span class="stat-value">{{ summary.expense_count }}</span>
+                <span class="stat-value">{{ summary.transaction_count }}</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Top category</span>
@@ -78,11 +78,11 @@
                     {% for row in category_totals %}
                     <div class="category-row">
                         <div class="category-row-top">
-                            <span class="category-row-name">{{ row.category }}</span>
-                            <span class="category-row-amount">₹{{ "%.2f" | format(row.total) }}</span>
+                            <span class="category-row-name">{{ row.name }}</span>
+                            <span class="category-row-amount">₹{{ "%.2f" | format(row.amount) }}</span>
                         </div>
                         <div class="category-bar-track">
-                            <div class="category-bar" style="width: {{ (row.total / category_totals[0].total * 100) | round(1) }}%"></div>
+                            <div class="category-bar" style="width: {{ row.pct }}%"></div>
                         </div>
                     </div>
                     {% endfor %}

@@ -14,6 +14,10 @@ from database.db import (
     init_db,
     seed_db,
 )
+from database.queries import get_summary_stats
+from database.queries import get_user_by_id as get_user_profile
+from database.queries import get_recent_transactions
+from database.queries import get_category_breakdown
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key-change-in-production"
@@ -100,15 +104,15 @@ def profile():
     if not user_id:
         return redirect(url_for("login"))
 
-    user = get_user_by_id(user_id)
+    user = get_user_profile(user_id)
     if user is None:
         session.clear()
         return redirect(url_for("login"))
 
-    summary = get_expense_summary(user_id)
-    recent_expenses = get_recent_expenses(user_id)
-    category_totals = get_category_totals(user_id)
-    top_category = category_totals[0]["category"] if category_totals else None
+    summary = get_summary_stats(user_id)
+    recent_expenses = get_recent_transactions(user_id)
+    category_totals = get_category_breakdown(user_id)
+    top_category = category_totals[0]["name"] if category_totals else None
 
     return render_template(
         "profile.html",
