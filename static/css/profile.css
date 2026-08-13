@@ -64,6 +64,110 @@
     color: var(--ink-faint);
 }
 
+/* Flash messages */
+
+.flash-error {
+    background: var(--danger-light);
+    color: var(--danger);
+    border: 1px solid #f5c6c2;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+.flash-success {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+/* Filter bar */
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.filter-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-preset {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    background: var(--paper-warm);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.filter-preset:hover {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.filter-preset.active {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+}
+
+.filter-custom {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-custom input[type="date"] {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.6rem;
+}
+
+.filter-custom-sep {
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+}
+
+.filter-apply {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--paper);
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.filter-apply:hover { opacity: 0.85; }
+
 /* Stat cards */
 
 .profile-stats {
@@ -278,4 +382,6 @@
     .profile-card { flex-direction: column; text-align: center; }
     .profile-info { align-items: center; }
     .tx-table { font-size: 0.8rem; }
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .filter-custom { flex-wrap: wrap; }
 }

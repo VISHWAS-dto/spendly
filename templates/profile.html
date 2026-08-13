@@ -13,6 +13,14 @@
 <section class="profile-section">
     <div class="profile-container">
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash-{{ 'error' if category == 'error' else 'success' }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <div class="profile-card">
             <div class="profile-avatar">{{ user.name[:1] | upper }}</div>
             <div class="profile-info">
@@ -20,6 +28,22 @@
                 <p class="profile-email">{{ user.email }}</p>
                 <p class="profile-since">Member since {{ user.member_since }}</p>
             </div>
+        </div>
+
+        <div class="filter-bar">
+            <div class="filter-presets">
+                {% for key, label in filter_preset_labels %}
+                {% set preset_from, preset_to = filter_presets[key] %}
+                <a href="{{ url_for('profile', date_from=preset_from, date_to=preset_to) }}"
+                   class="filter-preset{{ ' active' if date_from == preset_from and date_to == preset_to else '' }}">{{ label }}</a>
+                {% endfor %}
+            </div>
+            <form method="GET" action="{{ url_for('profile') }}" class="filter-custom">
+                <input type="date" name="date_from" value="{{ date_from or '' }}" aria-label="Start date">
+                <span class="filter-custom-sep">to</span>
+                <input type="date" name="date_to" value="{{ date_to or '' }}" aria-label="End date">
+                <button type="submit" class="filter-apply">Apply</button>
+            </form>
         </div>
 
         <div class="profile-stats">

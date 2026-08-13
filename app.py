@@ -1,16 +1,13 @@
 import sqlite3
+from calendar import monthrange
+from datetime import date, datetime
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
 
 from database.db import (
     create_user,
-    get_category_totals,
-    get_db,
-    get_expense_summary,
-    get_recent_expenses,
     get_user_by_email,
-    get_user_by_id,
     init_db,
     seed_db,
 )
@@ -25,6 +22,47 @@ app.secret_key = "dev-secret-key-change-in-production"
 with app.app_context():
     init_db()
     seed_db()
+
+
+# ------------------------------------------------------------------ #
+# Helpers                                                             #
+# ------------------------------------------------------------------ #
+
+def _months_ago(months):
+    today = date.today()
+    total_months = today.year * 12 + (today.month - 1) - months
+    year, month = divmod(total_months, 12)
+    month += 1
+    last_day = monthrange(year, month)[1]
+    return date(year, month, min(today.day, last_day))
+
+
+def _filter_presets():
+    today = date.today()
+    return {
+        "this_month": (today.replace(day=1).isoformat(), today.isoformat()),
+        "last_3_months": (_months_ago(3).isoformat(), today.isoformat()),
+        "last_6_months": (_months_ago(6).isoformat(), today.isoformat()),
+        "all_time": (None, None),
+    }
+
+
+FILTER_PRESET_LABELS = [
+    ("this_month", "This Month"),
+    ("last_3_months", "Last 3 Months"),
+    ("last_6_months", "Last 6 Months"),
+    ("all_time", "All Time"),
+]
+
+
+def _parse_date_param(value):
+    if not value:
+        return None
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+    except ValueError:
+        return None
+    return value
 
 
 # ------------------------------------------------------------------ #
@@ -109,9 +147,17 @@ def profile():
         session.clear()
         return redirect(url_for("login"))
 
-    summary = get_summary_stats(user_id)
-    recent_expenses = get_recent_transactions(user_id)
-    category_totals = get_category_breakdown(user_id)
+    date_from = _parse_date_param(request.args.get("date_from"))
+    date_to = _parse_date_param(request.args.get("date_to"))
+
+    if date_from and date_to and date_from > date_to:
+        flash("Start date must be before end date.", "error")
+        date_from = None
+        date_to = None
+
+    summary = get_summary_stats(user_id, date_from=date_from, date_to=date_to)
+    recent_expenses = get_recent_transactions(user_id, date_from=date_from, date_to=date_to)
+    category_totals = get_category_breakdown(user_id, date_from=date_from, date_to=date_to)
     top_category = category_totals[0]["name"] if category_totals else None
 
     return render_template(
@@ -122,6 +168,10 @@ def profile():
         category_totals=category_totals,
         top_category=top_category,
         nav_user=user,
+        date_from=date_from,
+        date_to=date_to,
+        filter_presets=_filter_presets(),
+        filter_preset_labels=FILTER_PRESET_LABELS,
     )
 
 
