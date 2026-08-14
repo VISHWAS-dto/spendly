@@ -241,6 +241,22 @@
     border-bottom: 1px solid var(--border-soft);
 }
 
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.panel-header .panel-title {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
 /* Recent transactions table */
 
 .tx-table-wrap { overflow-x: auto; }

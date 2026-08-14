@@ -25,6 +25,7 @@
                 {% else %}
                 <a href="{{ url_for('profile') }}">My account</a>
                 {% endif %}
+                <a href="{{ url_for('add_expense') }}">Add Expense</a>
                 <a href="{{ url_for('logout') }}" class="nav-cta">Sign out</a>
                 {% else %}
                 <a href="{{ url_for('login') }}">Sign in</a>

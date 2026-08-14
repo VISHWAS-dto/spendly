@@ -64,7 +64,10 @@
         <div class="profile-grid">
 
             <div class="panel">
-                <h2 class="panel-title">Recent transactions</h2>
+                <div class="panel-header">
+                    <h2 class="panel-title">Recent transactions</h2>
+                    <a href="{{ url_for('add_expense') }}" class="btn-primary">Add Expense</a>
+                </div>
 
                 {% if recent_expenses %}
                 <div class="tx-table-wrap">
