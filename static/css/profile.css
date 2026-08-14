@@ -274,9 +274,11 @@
     color: var(--ink-muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 0 0 0.75rem;
+    padding: 0 1rem 0.75rem 0;
     border-bottom: 1px solid var(--border);
 }
+
+.tx-table thead th:last-child { padding-right: 0; }
 
 .tx-table tbody tr {
     border-bottom: 1px solid var(--border-soft);
@@ -288,11 +290,13 @@
 .tx-table tbody tr:hover { background: var(--paper-warm); }
 
 .tx-table td {
-    padding: 0.85rem 0;
+    padding: 0.85rem 1rem 0.85rem 0;
     vertical-align: middle;
     color: var(--ink-soft);
     white-space: nowrap;
 }
+
+.tx-table td:last-child { padding-right: 0; }
 
 .tx-desc {
     white-space: normal;
@@ -305,6 +309,28 @@
     font-variant-numeric: tabular-nums;
     font-weight: 500;
     color: var(--ink);
+}
+
+.tx-actions-col {
+    text-align: right;
+    width: 1%;
+}
+
+.tx-edit-link {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.tx-edit-link:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
 }
 
 .category-badge {
