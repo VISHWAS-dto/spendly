@@ -78,6 +78,7 @@
                                 <th>Description</th>
                                 <th>Category</th>
                                 <th class="tx-amount-col">Amount</th>
+                                <th class="tx-actions-col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +88,7 @@
                                 <td class="tx-desc">{{ expense.description if expense.description else "—" }}</td>
                                 <td><span class="category-badge">{{ expense.category }}</span></td>
                                 <td class="tx-amount-col tx-amount">₹{{ "%.2f" | format(expense.amount) }}</td>
+                                <td class="tx-actions-col"><a href="{{ url_for('edit_expense', id=expense.id) }}" class="tx-edit-link">Edit</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

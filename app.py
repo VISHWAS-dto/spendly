@@ -2,7 +2,7 @@ import sqlite3
 from calendar import monthrange
 from datetime import date, datetime, timedelta
 
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, abort, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
 
 from database.db import (
@@ -19,6 +19,8 @@ from database.queries import get_category_breakdown
 from database.queries import insert_expense
 from database.queries import get_daily_spending_trend
 from database.queries import get_monthly_comparison
+from database.queries import get_expense_by_id
+from database.queries import update_expense
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key-change-in-production"
@@ -357,9 +359,74 @@ def add_expense():
 # Placeholder routes — students will implement these                  #
 # ------------------------------------------------------------------ #
 
-@app.route("/expenses/<int:id>/edit")
+@app.route("/expenses/<int:id>/edit", methods=["GET", "POST"])
 def edit_expense(id):
-    return "Edit expense — coming in Step 8"
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("login"))
+
+    if get_user_profile(user_id) is None:
+        session.clear()
+        return redirect(url_for("login"))
+
+    expense = get_expense_by_id(id, user_id)
+    if expense is None:
+        abort(404)
+
+    if request.method == "GET":
+        return render_template(
+            "edit_expense.html",
+            expense=expense,
+            categories=CATEGORIES,
+        )
+
+    amount_raw = request.form.get("amount", "").strip()
+    category = request.form.get("category", "").strip()
+    expense_date = request.form.get("date", "").strip()
+    description = request.form.get("description", "").strip() or None
+
+    form_values = {
+        "amount": amount_raw,
+        "category": category,
+        "date": expense_date,
+        "description": description or "",
+    }
+
+    try:
+        amount = float(amount_raw)
+    except ValueError:
+        amount = None
+
+    if amount is None or amount <= 0:
+        flash("Enter a valid amount greater than 0.", "error")
+        return render_template(
+            "edit_expense.html",
+            expense=expense,
+            categories=CATEGORIES,
+            form_values=form_values,
+        )
+
+    if category not in CATEGORIES:
+        flash("Select a valid category.", "error")
+        return render_template(
+            "edit_expense.html",
+            expense=expense,
+            categories=CATEGORIES,
+            form_values=form_values,
+        )
+
+    if not _parse_date_param(expense_date):
+        flash("Enter a valid date.", "error")
+        return render_template(
+            "edit_expense.html",
+            expense=expense,
+            categories=CATEGORIES,
+            form_values=form_values,
+        )
+
+    update_expense(id, user_id, amount, category, expense_date, description)
+    flash("Expense updated.", "success")
+    return redirect(url_for("profile"))
 
 
 @app.route("/expenses/<int:id>/delete")
