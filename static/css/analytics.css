@@ -1,0 +1,424 @@
+/* ------------------------------------------------------------------ */
+/* Analytics page — dashboard layout                                   */
+/* ------------------------------------------------------------------ */
+
+.analytics-section {
+    min-height: calc(100vh - 60px - 100px);
+    padding: 3rem 2rem 4rem;
+}
+
+.analytics-container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+.analytics-header {
+    margin-bottom: 1.5rem;
+}
+
+.analytics-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+}
+
+.analytics-subtitle {
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+}
+
+/* Flash messages */
+
+.analytics-page .flash-error {
+    background: var(--danger-light);
+    color: var(--danger);
+    border: 1px solid #f5c6c2;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+.analytics-page .flash-success {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+/* Filter bar (shared naming with Profile page) */
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.filter-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-preset {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    background: var(--paper-warm);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.filter-preset:hover {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.filter-preset.active {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+}
+
+.filter-custom {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-custom input[type="date"] {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.6rem;
+}
+
+.filter-custom-sep {
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+}
+
+.filter-apply {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--paper);
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.filter-apply:hover { opacity: 0.85; }
+
+/* KPI stat cards */
+
+.analytics-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.45rem;
+    height: 100%;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.stat-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+/* Panels */
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.panel-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--ink);
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+/* Spending trend line chart */
+
+.trend-chart {
+    width: 100%;
+    height: 200px;
+}
+
+.trend-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.trend-line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.trend-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+}
+
+/* Two-column grid: category breakdown + monthly comparison */
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    align-items: stretch;
+}
+
+.analytics-grid .panel { margin-bottom: 0; }
+
+/* Category breakdown (shared naming with Profile page) */
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.category-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.35rem;
+}
+
+.category-row-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-transform: capitalize;
+}
+
+.category-row-amount {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.category-bar-track {
+    height: 8px;
+    background: var(--border-soft);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.category-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.6s ease;
+}
+
+/* Monthly comparison bar chart */
+
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem;
+    height: 180px;
+}
+
+.bar-chart-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+    height: 100%;
+}
+
+.bar-chart-track {
+    width: 100%;
+    max-width: 32px;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    background: var(--border-soft);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.bar-chart-bar {
+    width: 100%;
+    background: var(--accent-2);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    transition: height 0.6s ease;
+    min-height: 2px;
+}
+
+.bar-chart-label {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+}
+
+/* Recent spending table (shared naming with Profile page) */
+
+.tx-table-wrap { overflow-x: auto; }
+
+.tx-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.tx-table thead th {
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 0 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.tx-table tbody tr {
+    border-bottom: 1px solid var(--border-soft);
+    transition: background 0.15s;
+}
+
+.tx-table tbody tr:last-child { border-bottom: none; }
+
+.tx-table tbody tr:hover { background: var(--paper-warm); }
+
+.tx-table td {
+    padding: 0.85rem 0;
+    vertical-align: middle;
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+.tx-desc {
+    white-space: normal;
+    color: var(--ink);
+}
+
+.tx-amount-col { text-align: right; }
+
+.tx-amount {
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.category-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* Empty state */
+
+.empty-state {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    min-height: 6rem;
+    text-align: center;
+}
+
+/* Footer — lighter weight, matches Profile page */
+
+.analytics-page .footer { padding: 1.25rem 2rem; }
+
+.analytics-page .footer-inner { gap: 0.25rem; }
+
+.analytics-page .footer .brand-icon { font-size: 1.1rem; }
+
+.analytics-page .footer-name { font-size: 0.85rem; }
+
+.analytics-page .footer-copy { display: none; }
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .analytics-stats { grid-template-columns: 1fr; }
+    .analytics-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+    .analytics-section { padding: 2rem 1rem 3rem; }
+    .tx-table { font-size: 0.8rem; }
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .filter-custom { flex-wrap: wrap; }
+    .bar-chart { height: 140px; }
+}

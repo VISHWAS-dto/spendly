@@ -1,6 +1,6 @@
 import sqlite3
 from calendar import monthrange
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
@@ -17,6 +17,8 @@ from database.queries import get_user_by_id as get_user_profile
 from database.queries import get_recent_transactions
 from database.queries import get_category_breakdown
 from database.queries import insert_expense
+from database.queries import get_daily_spending_trend
+from database.queries import get_monthly_comparison
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key-change-in-production"
@@ -35,8 +37,9 @@ def _months_ago(months):
     total_months = today.year * 12 + (today.month - 1) - months
     year, month = divmod(total_months, 12)
     month += 1
-    last_day = monthrange(year, month)[1]
-    return date(year, month, min(today.day, last_day))
+    day = min(today.day, [31, 29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
+                          31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1])
+    return date(year, month, day)
 
 
 def _filter_presets():
@@ -54,6 +57,22 @@ FILTER_PRESET_LABELS = [
     ("last_3_months", "Last 3 Months"),
     ("last_6_months", "Last 6 Months"),
     ("all_time", "All Time"),
+]
+
+
+def _analytics_filter_presets():
+    today = date.today()
+    return {
+        "7_days": ((today - timedelta(days=6)).isoformat(), today.isoformat()),
+        "30_days": ((today - timedelta(days=29)).isoformat(), today.isoformat()),
+        "3_months": (_months_ago(3).isoformat(), today.isoformat()),
+    }
+
+
+ANALYTICS_FILTER_PRESET_LABELS = [
+    ("7_days", "7 Days"),
+    ("30_days", "30 Days"),
+    ("3_months", "3 Months"),
 ]
 
 
@@ -174,6 +193,87 @@ def profile():
         date_to=date_to,
         filter_presets=_filter_presets(),
         filter_preset_labels=FILTER_PRESET_LABELS,
+    )
+
+
+def _trend_chart_points(trend, width=600, height=200):
+    if len(trend) < 2:
+        return ""
+
+    amounts = [day["amount"] for day in trend]
+    max_amount = max(amounts)
+    min_amount = min(amounts)
+    span = max_amount - min_amount or 1
+    step = width / (len(trend) - 1)
+
+    points = []
+    for i, day in enumerate(trend):
+        x = round(i * step, 2)
+        y = round(height - ((day["amount"] - min_amount) / span) * height, 2)
+        points.append(f"{x},{y}")
+    return " ".join(points)
+
+
+@app.route("/analytics")
+def analytics():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("login"))
+
+    user = get_user_profile(user_id)
+    if user is None:
+        session.clear()
+        return redirect(url_for("login"))
+
+    date_from = _parse_date_param(request.args.get("date_from"))
+    date_to = _parse_date_param(request.args.get("date_to"))
+    active_preset = request.args.get("preset")
+
+    if date_from and date_to and date_from > date_to:
+        flash("Start date must be before end date.", "error")
+        date_from = None
+        date_to = None
+
+    presets = _analytics_filter_presets()
+    if active_preset in presets:
+        date_from, date_to = presets[active_preset]
+    elif not date_from and not date_to:
+        active_preset = "30_days"
+        date_from, date_to = presets[active_preset]
+    else:
+        active_preset = None
+
+    summary = get_summary_stats(user_id, date_from=date_from, date_to=date_to)
+    this_month_summary = get_summary_stats(
+        user_id,
+        date_from=date.today().replace(day=1).isoformat(),
+        date_to=date.today().isoformat(),
+    )
+    category_totals = get_category_breakdown(user_id, date_from=date_from, date_to=date_to)
+    recent_expenses = get_recent_transactions(user_id, limit=5, date_from=date_from, date_to=date_to)
+    trend = get_daily_spending_trend(user_id, date_from=date_from, date_to=date_to)
+    monthly = get_monthly_comparison(user_id)
+
+    max_monthly_amount = max((row["amount"] for row in monthly), default=0)
+    for row in monthly:
+        row["pct"] = round(row["amount"] / max_monthly_amount * 100) if max_monthly_amount else 0
+        row["label"] = datetime.strptime(row["month"], "%Y-%m").strftime("%b")
+
+    return render_template(
+        "analytics.html",
+        nav_user=user,
+        summary=summary,
+        this_month_total=this_month_summary["total_spent"],
+        category_totals=category_totals,
+        recent_expenses=recent_expenses,
+        trend=trend,
+        trend_points=_trend_chart_points(trend),
+        monthly=monthly,
+        date_from=date_from,
+        date_to=date_to,
+        filter_presets=presets,
+        filter_preset_labels=ANALYTICS_FILTER_PRESET_LABELS,
+        active_preset=active_preset,
     )
 
 
