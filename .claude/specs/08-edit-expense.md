@@ -168,3 +168,4 @@ File: `tests/test_edit_expense.py`
 - [ ] Submitting with an invalid date re-renders the form with an error
 - [ ] Submitting without a description saves the expense with no description (no error)
 - [ ] Each row in the profile transaction table has an "Edit" link pointing to the correct URL
+
