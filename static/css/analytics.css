@@ -1,72 +1,37 @@
 /* ------------------------------------------------------------------ */
-/* Profile page — dashboard layout                                     */
+/* Analytics page — dashboard layout                                   */
 /* ------------------------------------------------------------------ */
 
-.profile-section {
+.analytics-section {
     min-height: calc(100vh - 60px - 100px);
     padding: 3rem 2rem 4rem;
 }
 
-.profile-container {
+.analytics-container {
     width: 100%;
     max-width: var(--max-width);
     margin: 0 auto;
 }
 
-/* Profile card */
-
-.profile-card {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    background: var(--paper-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.375rem 1.75rem;
+.analytics-header {
     margin-bottom: 1.5rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
 }
 
-.profile-avatar {
-    flex-shrink: 0;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: var(--paper);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.analytics-title {
     font-family: var(--font-display);
-    font-size: 1.4rem;
-}
-
-.profile-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-}
-
-.profile-name {
-    font-family: var(--font-display);
-    font-size: 1.4rem;
+    font-size: 2rem;
     color: var(--ink);
-    line-height: 1.2;
+    margin-bottom: 0.25rem;
 }
 
-.profile-email {
-    font-size: 0.85rem;
+.analytics-subtitle {
+    font-size: 0.9rem;
     color: var(--ink-muted);
-}
-
-.profile-since {
-    font-size: 0.75rem;
-    color: var(--ink-faint);
 }
 
 /* Flash messages */
 
-.flash-error {
+.analytics-page .flash-error {
     background: var(--danger-light);
     color: var(--danger);
     border: 1px solid #f5c6c2;
@@ -76,7 +41,7 @@
     margin-bottom: 1.25rem;
 }
 
-.flash-success {
+.analytics-page .flash-success {
     background: var(--accent-light);
     color: var(--accent);
     border: 1px solid var(--border);
@@ -86,7 +51,7 @@
     margin-bottom: 1.25rem;
 }
 
-/* Filter bar */
+/* Filter bar (shared naming with Profile page) */
 
 .filter-bar {
     display: flex;
@@ -168,11 +133,11 @@
 
 .filter-apply:hover { opacity: 0.85; }
 
-/* Stat cards */
+/* KPI stat cards */
 
-.profile-stats {
+.analytics-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
     margin-bottom: 1.5rem;
 }
@@ -208,19 +173,7 @@
     line-height: 1.1;
 }
 
-.stat-value-text {
-    font-size: 1.35rem;
-    text-transform: capitalize;
-}
-
-/* Two-column main grid */
-
-.profile-grid {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 1.25rem;
-    align-items: stretch;
-}
+/* Panels */
 
 .panel {
     display: flex;
@@ -229,6 +182,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 1.75rem;
+    margin-bottom: 1.25rem;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
 }
 
@@ -241,23 +195,134 @@
     border-bottom: 1px solid var(--border-soft);
 }
 
-.panel-header {
+/* Spending trend line chart */
+
+.trend-chart {
+    width: 100%;
+    height: 200px;
+}
+
+.trend-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.trend-line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.trend-labels {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding-bottom: 1rem;
-    margin-bottom: 1.25rem;
-    border-bottom: 1px solid var(--border-soft);
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--ink-faint);
 }
 
-.panel-header .panel-title {
-    padding-bottom: 0;
-    margin-bottom: 0;
-    border-bottom: none;
+/* Two-column grid: category breakdown + monthly comparison */
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    align-items: stretch;
 }
 
-/* Recent transactions table */
+.analytics-grid .panel { margin-bottom: 0; }
+
+/* Category breakdown (shared naming with Profile page) */
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.category-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.35rem;
+}
+
+.category-row-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-transform: capitalize;
+}
+
+.category-row-amount {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.category-bar-track {
+    height: 8px;
+    background: var(--border-soft);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.category-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.6s ease;
+}
+
+/* Monthly comparison bar chart */
+
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem;
+    height: 180px;
+}
+
+.bar-chart-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+    height: 100%;
+}
+
+.bar-chart-track {
+    width: 100%;
+    max-width: 32px;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    background: var(--border-soft);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.bar-chart-bar {
+    width: 100%;
+    background: var(--accent-2);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    transition: height 0.6s ease;
+    min-height: 2px;
+}
+
+.bar-chart-label {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+}
+
+/* Recent spending table (shared naming with Profile page) */
 
 .tx-table-wrap { overflow-x: auto; }
 
@@ -318,49 +383,6 @@
     white-space: nowrap;
 }
 
-/* By category */
-
-.category-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-}
-
-.category-row-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 0.35rem;
-}
-
-.category-row-name {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--ink-soft);
-    text-transform: capitalize;
-}
-
-.category-row-amount {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
-}
-
-.category-bar-track {
-    height: 8px;
-    background: var(--border-soft);
-    border-radius: 999px;
-    overflow: hidden;
-}
-
-.category-bar {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 999px;
-    transition: width 0.6s ease;
-}
-
 /* Empty state */
 
 .empty-state {
@@ -374,30 +396,29 @@
     text-align: center;
 }
 
-/* Footer — lighter weight on the profile page */
+/* Footer — lighter weight, matches Profile page */
 
-.profile-page .footer { padding: 1.25rem 2rem; }
+.analytics-page .footer { padding: 1.25rem 2rem; }
 
-.profile-page .footer-inner { gap: 0.25rem; }
+.analytics-page .footer-inner { gap: 0.25rem; }
 
-.profile-page .footer .brand-icon { font-size: 1.1rem; }
+.analytics-page .footer .brand-icon { font-size: 1.1rem; }
 
-.profile-page .footer-name { font-size: 0.85rem; }
+.analytics-page .footer-name { font-size: 0.85rem; }
 
-.profile-page .footer-copy { display: none; }
+.analytics-page .footer-copy { display: none; }
 
 /* Responsive */
 
 @media (max-width: 900px) {
-    .profile-stats { grid-template-columns: 1fr; }
-    .profile-grid { grid-template-columns: 1fr; }
+    .analytics-stats { grid-template-columns: 1fr; }
+    .analytics-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {
-    .profile-section { padding: 2rem 1rem 3rem; }
-    .profile-card { flex-direction: column; text-align: center; }
-    .profile-info { align-items: center; }
+    .analytics-section { padding: 2rem 1rem 3rem; }
     .tx-table { font-size: 0.8rem; }
     .filter-bar { flex-direction: column; align-items: stretch; }
     .filter-custom { flex-wrap: wrap; }
+    .bar-chart { height: 140px; }
 }

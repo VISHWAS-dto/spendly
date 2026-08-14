@@ -112,6 +112,22 @@ def get_recent_transactions(user_id, limit=10, date_from=None, date_to=None):
         conn.close()
 
 
+def insert_expense(user_id, amount, category, expense_date, description):
+    conn = get_db()
+    try:
+        cursor = conn.execute(
+            """
+            INSERT INTO expenses (user_id, amount, category, date, description)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (user_id, amount, category, expense_date, description),
+        )
+        conn.commit()
+        return cursor.lastrowid
+    finally:
+        conn.close()
+
+
 def get_category_breakdown(user_id, date_from=None, date_to=None):
     conn = get_db()
     try:
@@ -149,5 +165,44 @@ def get_category_breakdown(user_id, date_from=None, date_to=None):
             largest["pct"] += remainder
 
         return breakdown
+    finally:
+        conn.close()
+
+
+def get_daily_spending_trend(user_id, date_from=None, date_to=None):
+    conn = get_db()
+    try:
+        range_clause, range_params = _date_range_clause(date_from, date_to)
+
+        rows = conn.execute(
+            f"""
+            SELECT date, SUM(amount) AS amount
+            FROM expenses
+            WHERE user_id = ?{range_clause}
+            GROUP BY date
+            ORDER BY date ASC
+            """,
+            (user_id, *range_params),
+        ).fetchall()
+        return [{"date": row["date"], "amount": row["amount"]} for row in rows]
+    finally:
+        conn.close()
+
+
+def get_monthly_comparison(user_id, months=6):
+    conn = get_db()
+    try:
+        rows = conn.execute(
+            """
+            SELECT strftime('%Y-%m', date) AS month, SUM(amount) AS amount
+            FROM expenses
+            WHERE user_id = ?
+            GROUP BY month
+            ORDER BY month DESC
+            LIMIT ?
+            """,
+            (user_id, months),
+        ).fetchall()
+        return [{"month": row["month"], "amount": row["amount"]} for row in reversed(rows)]
     finally:
         conn.close()
